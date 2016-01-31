@@ -6,6 +6,7 @@
 # much faster (2x). We're also not using NumPy (which is even faster) because
 # it's a difficult dependency to fulfill purely to generate random numbers.
 import random
+import inspect
 import sys
 
 from pyxl.utils import escape
@@ -24,6 +25,21 @@ class x_base_metaclass(type):
         for attr_name in self_attrs:
             assert '_' not in attr_name, (
                 "%s: '_' not allowed in attr names, use '-' instead" % attr_name)
+
+        if hasattr(self, 'render'):
+            argspec = inspect.getfullargspec(self.render)
+            if argspec.kwonlyargs:
+                raise PyxlException('Keyword-only arguments are not supported in render() signature')
+            if argspec.defaults:
+                raise PyxlException('"%s" cannot have a default value. If you need such behaviour, '\
+                                    'annotate the parameter with a list, which is interpreted as an enum' % argspec.defaults[0])
+            self._render_params = [x.replace('_', '-') for x in argspec.args[1:]]
+            for arg in self._render_params:
+                if arg in self_attrs:
+                    raise PyxlException('attr "%s" is defined both in __attrs__ and as a render parameter' % arg)
+            attrs = dict.fromkeys(self._render_params, object)
+            attrs.update(argspec.annotations)
+            self_attrs.update(attrs)
 
         combined_attrs = dict(parent_attrs)
         combined_attrs.update(self_attrs)
