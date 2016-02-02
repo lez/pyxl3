@@ -13,8 +13,8 @@ Existing templating systems do support things like logic and reusable modules - 
 ```py
 import html
 print (
-    html.head().appendChild(
-        html.body().appendChild(
+    html.head().append_children(
+        html.body().append_children(
                 html.text("Hello World!"))))
 ```
 
@@ -149,7 +149,7 @@ UI Modules are especially useful for creating re-usable building blocks in your 
 
 Creating UI modules in Pyxl simply means creating a class that inherits from [`x_element`](https://github.com/dropboxe/pyxl/blob/master/pyxl/pyxl/element.py) and implements the `render()` method. Modules must be prefixed with `x_`. This is an arbitrary requirement, but is useful in separating out pyxl modules from other things.
 
-Arguments to a UI module are passed as attributes to the UI module tag. Attribute values for these tags need not evaluate to samething that can be cast to unicode, ONLY if the attribute value is a single python expression i.e. the only thing inside the quotes is a {} wrapped python expression. This allows one to pass in any type to a UI module. To demonstrate, a useful UI module is a user badge, which displays a user profile picture with the user's name and some arbitrary content to the right of it:
+Arguments to a UI module are passed as attributes to the UI module tag. Attribute values for these tags need not evaluate to something that can be cast to unicode, ONLY if the attribute value is a single python expression i.e. the only thing inside the quotes is a {} wrapped python expression. This allows one to pass in any type to a UI module. To demonstrate, a useful UI module is a user badge, which displays a user profile picture with the user's name and some arbitrary content to the right of it:
 
 ```py
 # coding: pyxl
