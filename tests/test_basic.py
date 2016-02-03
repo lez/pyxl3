@@ -142,5 +142,35 @@ class PyxlTests(unittest2.TestCase):
                 def render(self, laughing):
                     pass
 
+    def test_validate_attrs(self):
+
+        class x_foo(x_element):
+
+            __validate_attrs__ = False
+
+            def render(self):
+                return <span>{self.anything}</span>
+
+        self.assertEqual(<foo anything="yep" />.to_string(), '<span>yep</span>')
+
+        class x_bar(x_element):
+
+            __validate_attrs__ = True
+
+            def render(self):
+                return <span>{self.anything}</span>
+
+        with self.assertRaises(PyxlException):
+            <bar anything="nope" />
+
+        class x_baz(x_element):
+
+            def render(self):
+                return <span>{self.anything}</span>
+
+        with self.assertRaises(PyxlException):
+            <baz anything="nope" />
+
+
 if __name__ == '__main__':
     unittest2.main()

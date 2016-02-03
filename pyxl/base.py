@@ -45,6 +45,7 @@ class x_base_metaclass(type):
         combined_attrs.update(self_attrs)
         setattr(self, '__attrs__', combined_attrs)
         setattr(self, '__tag__', name[2:])
+        setattr(self, '__validate_attrs__', getattr(self, '__validate_attrs__', True))
 
 class x_base(metaclass=x_base_metaclass):
 
@@ -185,28 +186,29 @@ class x_base(metaclass=x_base_metaclass):
             raise PyxlException('<%s> has no attr named "%s"' % (self.__tag__, name))
 
         if value is not None:
-            attr_type = self.__attrs__.get(name, str)
+            if self.__validate_attrs__:
+                attr_type = self.__attrs__.get(name, str)
 
-            if type(attr_type) == list:
-                # support for enum values in pyxl attributes
-                values_enum = attr_type
-                assert values_enum, 'Invalid attribute definition'
+                if type(attr_type) == list:
+                    # support for enum values in pyxl attributes
+                    values_enum = attr_type
+                    assert values_enum, 'Invalid attribute definition'
 
-                if value not in values_enum:
-                    msg = '%s: %s: incorrect value "%s" for "%s". Expecting enum value %s' % (
-                        self.__tag__, self.__class__.__name__, value, name, values_enum)
-                    raise PyxlException(msg)
+                    if value not in values_enum:
+                        msg = '%s: %s: incorrect value "%s" for "%s". Expecting enum value %s' % (
+                            self.__tag__, self.__class__.__name__, value, name, values_enum)
+                        raise PyxlException(msg)
 
-            else:
-                try:
-                    # Validate type of attr and cast to correct type if possible
-                    value = value if isinstance(value, attr_type) else attr_type(value)
-                except Exception:
-                    exc_type, exc_obj, exc_tb = sys.exc_info()
-                    msg = '%s: %s: incorrect type for "%s". expected %s, got %s' % (
-                        self.__tag__, self.__class__.__name__, name, attr_type, type(value))
-                    exception = PyxlException(msg)
-                    raise exception.with_traceback(exc_tb)
+                else:
+                    try:
+                        # Validate type of attr and cast to correct type if possible
+                        value = value if isinstance(value, attr_type) else attr_type(value)
+                    except Exception:
+                        exc_type, exc_obj, exc_tb = sys.exc_info()
+                        msg = '%s: %s: incorrect type for "%s". expected %s, got %s' % (
+                            self.__tag__, self.__class__.__name__, name, attr_type, type(value))
+                        exception = PyxlException(msg)
+                        raise exception.with_traceback(exc_tb)
 
             self.__attributes__[name] = value
 
@@ -235,6 +237,8 @@ class x_base(metaclass=x_base_metaclass):
             self.set_attr(name, value)
 
     def allows_attribute(self, name):
+        if not self.__validate_attrs__:
+            return True
         return (name in self.__attrs__ or name.startswith('data-') or name.startswith('aria-'))
 
     def to_string(self):
