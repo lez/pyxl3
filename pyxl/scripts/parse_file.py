@@ -3,5 +3,5 @@
 import sys
 from pyxl.codec.tokenizer import pyxl_tokenize, pyxl_untokenize
 
-f = open(sys.argv[1], 'r')
-print pyxl_untokenize(pyxl_tokenize(f.readline)),
+with open(sys.argv[1], 'r') as f:
+    print(pyxl_untokenize(pyxl_tokenize(f.readline)), end='')
