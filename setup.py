@@ -6,7 +6,7 @@ import sys
 version = "1.0"
 
 distutils.core.setup(
-    name="pyxl",
+    name="pyxl3",
     version=version,
     packages = ["pyxl", "pyxl.codec", "pyxl.scripts", "pyxl.examples"],
     author="Akhil Wable",
