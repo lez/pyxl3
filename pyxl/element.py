@@ -37,7 +37,7 @@ class x_element(x_base):
             self.postrender(self._element)
         return self._element
 
-    def render(self):
+    def render(self, *args):
         raise NotImplementedError()
 
     def prerender(self):
