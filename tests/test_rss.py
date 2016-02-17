@@ -1,7 +1,7 @@
 #coding: pyxl
 import datetime
 
-from  unittest2 import TestCase
+from unittest2 import TestCase, main
 from pyxl import html
 from pyxl import rss
 
@@ -193,3 +193,6 @@ class RssTests(TestCase):
         expected = ''.join(l.strip() for l in expected.splitlines())
 
         self.assertEqual(doc.to_string(), expected)
+
+if __name__ == '__main__':
+    main()
