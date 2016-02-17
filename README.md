@@ -22,7 +22,7 @@ To get around these limitations, we developed Pyxl which allowed us to treat HTM
 
 ```py
 # coding: pyxl
-print <html><body>Hello World!</body></html>
+print(<html><body>Hello World!</body></html>)
 ```
 
 This meant no longer dealing with a separate "templating" language, and a lot more control over how we wrote our front-end code. Also, since Pyxl maps HTML to structured python objects and expressions instead of arbitrary blobs of strings, adding support for things like automatically escaping data was trivial. Switching to Pyxl led to much cleaner and modularized UI code, and allowed us to write new features and pages a lot quicker.
@@ -60,7 +60,7 @@ python3 tests/test_basic.py
 Pyxl converts HTML tags into python objects before the file is run through the interpreter, so the code that actually runs is regular python. For example, the `Hello World` example above is converted into:
 
 ```py
-print x_head().append_children(x_body().append_children("Hello World!"))
+print(x_head().append_children(x_body().append_children("Hello World!")))
 ```
 
 Pyxl's usefulness comes from being able to write HTML rather than unwieldy object instantiations and function calls. Note that Pyxl automatically adds objects for all HTML tags to Python builtins, so there is no need to import `x_head` or `x_body` in the example above.
@@ -115,9 +115,9 @@ You can access any attribute of a tag as a member variable on the tag, or via th
 
 ```py
 fruit = <div data-text="tangerine" />
-print fruit.data_text
+print(fruit.data_text)
 fruit.set_attr('data-text', 'clementine')
-print fruit.attr('data-text') # alternate method for accessing attributes
+print(fruit.attr('data-text'))  # alternate method for accessing attributes
 ```
 
 ### Escaping
@@ -178,7 +178,7 @@ from my.db.model import User
 
 user = User.get(some_user_id)
 content = <div>Any arbitrary content...</div>
-print <user_badge user="{user}">{content}</user_badge>
+print(<user_badge user="{user}">{content}</user_badge>)
 ```
 
 Some things to note about UI modules.
