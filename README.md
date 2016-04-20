@@ -184,7 +184,8 @@ print(<user_badge user="{user}">{content}</user_badge>)
 Some things to note about UI modules.
 
 * Modules names must begin with `x_` and be an instance of `x_element`
-* There are two ways to specify attributes to UI Modules. You can either use python3 function annotations to `render()`, or use the `__attrs__` class variable. Both consists of keys and values in their own way. The key is the attribute name, and the value is the attribute type. Passing an attribute that is not listed in `__attrs__` or `render()` signature will result in an error. The only exceptions are attributes accepted by all pyxl elements i.e. id, class, style, onclick, title and anything prefixed with "data-" or "aria-".
+* The preferred method to specify attributes to UI Modules is via annotations to `render()`. The argument name for `render` specifies the attribute name, the annotation holds its type. Passing an attribute to UI elements that is not listed in `render()` signature will result in an error. The only exceptions are attributes accepted by all pyxl elements i.e. id, class, style, onclick, title and anything prefixed with "data-" or "aria-". However, all this validation can be switched off by adding a `__validate_attrs__ = False` to a UI module.
+* For backward compatibility attributes can be also specified via the `__attrs__` class variable. For details on using this method see the original [pyxl3 port](https://github.com/gvanrossum/pyxl3) by Guido van Rossum.
 * Providing a `class` attribute for a UI module element will automatically append the class string to the underlying HTML element the UI module renders. This is useful when you want to style UI modules differently based on where it is being rendered.
 
 ### Fragments
